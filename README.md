@@ -17,7 +17,7 @@ Have a 5-hour YouTube video but no time to watch it? This LLM application pulls 
  
 -  A **step-by-step coding video tutorial** is on the way—stay tuned!
 
-## More Examples
+## Example Outputs
 
 |[<img src="https://img.youtube.com/vi/u321m25rKXc/maxresdefault.jpg" width=200>](https://the-pocket.github.io/Tutorial-Youtube-Made-Simple/examples/Volodymyr%20Zelenskyy%3A%20Ukraine%2C%20War%2C%20Peace%2C%20Putin%2C%20Trump%2C%20NATO%2C%20and%20Freedom%20%7C%20Lex%20Fridman%20Podcast%20%23456.html) <br>Volodymyr Zelenskyy: Ukraine, War, Peace, Putin, Trump, NATO, and Freedom | [<img src="https://img.youtube.com/vi/_1f-o0nqpEI/maxresdefault.jpg" width=200> ](https://the-pocket.github.io/Tutorial-Youtube-Made-Simple/examples/DeepSeek%2C%20China%2C%20OpenAI%2C%20NVIDIA%2C%20xAI%2C%20TSMC%2C%20Stargate%2C%20and%20AI%20Megaclusters%20%7C%20Lex%20Fridman%20Podcast%20%23459.html) <br> DeepSeek, China, OpenAI, NVIDIA, xAI, TSMC, Stargate, and AI Megaclusters | [<img src="https://img.youtube.com/vi/qTogNUV3CAI/maxresdefault.jpg" width=200> ](https://the-pocket.github.io/Tutorial-Youtube-Made-Simple/examples/Demis%20Hassabis%20–%20Scaling%2C%20Superhuman%20AIs%2C%20AlphaZero%20atop%20LLMs%2C%20AlphaFold.html) <br> Demis Hassabis – Scaling, Superhuman AIs, AlphaZero atop LLMs, AlphaFold | [<img src="https://img.youtube.com/vi/JN3KPFbWCy8/maxresdefault.jpg" width=200> ](https://the-pocket.github.io/Tutorial-Youtube-Made-Simple/examples/Elon%20Musk%3A%20War%2C%20AI%2C%20Aliens%2C%20Politics%2C%20Physics%2C%20Video%20Games%2C%20and%20Humanity%20%7C%20Lex%20Fridman%20Podcast%20%23400.html) <br> Elon Musk: War, AI, Aliens, Politics, Physics, Video Games, and Humanity |
 | :-------------: | :-------------: | :-------------: | :-------------: |

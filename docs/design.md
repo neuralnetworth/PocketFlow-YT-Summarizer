@@ -6,7 +6,6 @@ This project takes a YouTube podcast URL, extracts the transcript, identifies ke
 ## Utility Functions
 
 1. **LLM Calls** (`utils/call_llm.py`)
-   - Process content and create child-friendly explanations
 
 2. **YouTube Processing** (`utils/youtube_processor.py`)
    - Get video title, transcript and thumbnail

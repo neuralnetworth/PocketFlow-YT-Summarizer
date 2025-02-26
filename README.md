@@ -15,7 +15,7 @@ Have a 5-hour YouTube video but no time to watch it? This LLM application pulls 
 
 - I built this in **just a few hours** using Pocket Flow + Cursor AI, and you can, too.
  
--  A **step-by-step coding video tutorial** is on the way—stay tuned!
+-  A **step-by-step video tutorial** on how I built it is on the way—stay tuned!
 
 ## Example Outputs
 

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Handwritten Markdown (Non-Cursive)</title>
+  <!-- Using Tailwind CSS CDN -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css"
+  />
+  <!-- Google Font for a handwriting style -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    body {
+      background-color: #f7fafc;
+      font-family: 'Patrick Hand', sans-serif;
+    }
+    h1, h2 {
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    ul {
+      list-style-type: disc;
+      margin-left: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    li {
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+  <div class="max-w-2xl w-full bg-white rounded-2xl shadow-lg p-6">
+    <!-- Title 1 -->
+    <h1 class="text-4xl text-gray-800 mb-4">Title 1</h1>
+    <!-- Image below Title 1 -->
+    <img
+      src="https://picsum.photos/600/300?grayscale"
+      alt="Placeholder image"
+      class="rounded-xl mb-6"
+    />
+    <h2 class="text-2xl text-gray-800 mb-4">Title 2</h2>
+    <ul class="text-gray-600">
+      <li>
+        <strong>First line of bullet 1</strong><br />
+        Additional normal text.
+      </li>
+      <li>
+        <strong>First line of bullet 2</strong><br />
+        Another detail in normal weight.
+      </li>
+    </ul>
+    <h2 class="text-2xl text-gray-800 mb-4">Title 3</h2>
+    <ul class="text-gray-600">
+      <li>
+        <strong>First line of bullet 3</strong><br />
+        More text in normal weight for bullet 3.
+      </li>
+    </ul>
+  </div>
+</body>
+</html>

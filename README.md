@@ -11,6 +11,8 @@ Have a 5-hour YouTube video but no time to watch it? This LLM application pulls 
 
 - **Design Doc:** [docs/design.md](docs/design.md)
 
+- **Flow Source Code:** [flow.py](flow.py)
+
 - **Built With:** [Pocket Flow](https://github.com/The-Pocket/PocketFlow), a 100-line LLM framework that lets you build AI apps by chatting with LLM agents.
 
 - I built this in **just a few hours** using Pocket Flow + Cursor AI, and you can, too.

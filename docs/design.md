@@ -31,12 +31,11 @@ The application flow consists of several key steps organized in a directed graph
 
 ```mermaid
 flowchart TD
-    videoProcess[Process YouTube URL] --> topicExtract[Extract Topics]
-    topicExtract --> questionGen[Generate Questions]
-    questionGen --> contentBatch[Batch Processing]
+    videoProcess[Process YouTube URL] --> topicsQuestions[Extract Topics & Questions]
+    topicsQuestions --> contentBatch[Content Processing]
     contentBatch --> htmlGen[Generate HTML]
     
-    subgraph contentBatch[Batch Processing]
+    subgraph contentBatch[Content Processing]
         topicProcess[Process Topic]
     end
 ```
@@ -82,28 +81,25 @@ shared = {
   - Read: URL from shared store
   - Write: Video information to shared store
 
-### 2. ExtractTopics
-- **Purpose**: Extract interesting topics from transcript
+### 2. ExtractTopicsAndQuestions
+- **Purpose**: Extract interesting topics from transcript and generate questions for each topic
 - **Design**: Regular Node (no batch/async)
 - **Data Access**:
   - Read: Transcript from shared store
-  - Write: Topics to shared store
+  - Write: Topics with questions to shared store
+- **Implementation Details**:
+  - First extracts up to 5 interesting topics from the transcript
+  - For each topic, immediately generates 3 relevant questions
+  - Returns a combined structure with topics and their associated questions
 
-### 3. GenerateQuestions
-- **Purpose**: Generate interesting questions for each topic
-- **Design**: BatchNode (process each topic)
-- **Data Access**:
-  - Read: Topics from shared store
-  - Write: Questions to shared store
-
-### 4. ProcessTopic
+### 3. ProcessContent
 - **Purpose**: Batch process each topic for rephrasing and answering
 - **Design**: BatchNode (process each topic)
 - **Data Access**:
   - Read: Topics and questions from shared store
   - Write: Rephrased content and answers to shared store
 
-### 5. GenerateHTML
+### 4. GenerateHTML
 - **Purpose**: Create final HTML output
 - **Design**: Regular Node (no batch/async)
 - **Data Access**:

@@ -1,109 +1,28 @@
-# YouTube Content Processor
+<h1 align="center">Explain Youtube Video To Me Like I'm 5</h1>
 
-A system that processes YouTube videos to extract interesting topics, generates questions and answers, and creates child-friendly (ELI5 - Explain Like I'm 5) explanations in a beautiful HTML format.
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
-## Features
+Have a 5-hour YouTube video but no time to watch it? This tool pulls the main topics and explains them in simple terms, so you can catch up in just minutes.
 
-- 🎬 Extracts transcript and metadata from YouTube videos
-- 🔍 Identifies up to 5 most interesting topics from the content
-- ❓ Generates 3 interesting questions for each topic
-- 🧠 Rephrases topics and questions for clarity
-- 👶 Creates simple ELI5 (Explain Like I'm 5) answers
-- 🌐 Generates a beautiful HTML report with all the processed content
+<div align="center">
+  <img src="./examples/front.png" width="700"/>
+</div>
 
-## Installation
 
-1. Clone the repository:
+- **Design Doc:** [docs/design.md](docs/design.md)
 
-```bash
-git clone https://github.com/yourusername/youtube-content-processor.git
-cd youtube-content-processor
-```
+- **Built With:** [Pocket Flow](https://github.com/The-Pocket/PocketFlow), a 100-line LLM framework that lets you build AI apps by chatting with LLM agents.
 
-2. Set up a virtual environment (optional but recommended):
+- I created this in just a few hours using Pocket Flow + Cursor AI. A **step-by-step coding video tutorial** is on the way—stay tuned!
 
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows, use: venv\Scripts\activate
-```
+## How to Run
 
-3. Install the required packages:
+1. Implement `call_llm` in `utils/call_llm.py` so it takes a string and returns a string.
 
+2. Install the dependencies and run the program:
 ```bash
 pip install -r requirements.txt
-```
-
-4. Set up API keys:
-
-Create a `.env` file in the project root and add your API keys:
-
-```
-ANTHROPIC_REGION=your_anthropic_region
-ANTHROPIC_PROJECT_ID=your_anthropic_project_id
-```
-
-## Usage
-
-You can run the processor in two ways:
-
-### Command Line
-
-```bash
 python main.py --url "https://www.youtube.com/watch?v=example"
 ```
 
-If you don't provide a URL, the program will prompt you to enter one.
-
-### As a Module
-
-```python
-from flow import create_youtube_processor_flow
-
-# Create the flow
-flow = create_youtube_processor_flow()
-
-# Initialize shared memory
-shared = {
-    "url": "https://www.youtube.com/watch?v=example"
-}
-
-# Run the flow
-flow.run(shared)
-
-# The HTML output is in shared["html_output"] and also saved to output.html
-print(f"HTML saved to: {os.path.abspath('output.html')}")
-```
-
-## Output
-
-The program generates an `output.html` file in the project directory. Open this file in a web browser to view the processed content in a beautiful, child-friendly format.
-
-The HTML output includes:
-- The video title and thumbnail
-- Sections for each identified topic
-- Questions and ELI5 answers for each topic
-
-## Project Structure
-
-```
-youtube-content-processor/
-├── main.py               # Main entry point
-├── flow.py               # Flow definition and node implementations
-├── utils/
-│   ├── __init__.py
-│   ├── call_llm.py       # LLM interaction functions
-│   ├── youtube_processor.py  # YouTube content extraction
-│   └── html_generator.py # HTML generation functions
-├── requirements.txt      # Project dependencies
-└── README.md             # Project documentation
-```
-
-## Requirements
-
-- Python 3.7+
-- Access to Anthropic API (Claude)
-- Internet connection to access YouTube content
-
-## License
-
-MIT
+3. When it’s done, open output.html (created in the project folder) to see the results.

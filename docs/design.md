@@ -21,7 +21,7 @@ The application flow consists of several key steps organized in a directed graph
 1. **Video Processing**: Extract transcript and metadata from YouTube URL
 2. **Topic Extraction**: Identify the most interesting topics (max 5)
 3. **Question Generation**: For each topic, generate interesting questions (3 per topic)
-4. **Content Processing**: Batch process each topic to:
+4. **Topic Processing**: Batch process each topic to:
    - Rephrase the topic title for clarity
    - Rephrase the questions
    - Generate ELI5 answers
@@ -92,7 +92,7 @@ shared = {
   - For each topic, immediately generates 3 relevant questions
   - Returns a combined structure with topics and their associated questions
 
-### 3. ProcessContent
+### 3. ProcessTopic
 - **Purpose**: Batch process each topic for rephrasing and answering
 - **Design**: BatchNode (process each topic)
 - **Data Access**:

@@ -103,7 +103,7 @@ if __name__ == "__main__":
         {
             "title": "Title 3",
             "bullets": [
-                ("First line of bullet 3", "More text in normal weight for bullet 3."),
+                ("First line of bullet 3", "More text in <i>normal weight</i> for bullet 3."),
             ]
         }
     ]

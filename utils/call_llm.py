@@ -45,15 +45,9 @@ def call_llm(prompt: str, use_cache: bool = True) -> str:
     
     logger.info(f"LLM response received (first 100 chars): {response}...")
     return response
-            
-def main():
-    """Test the LLM call functionality."""
-    test_prompt = "Hello, how are you?"
-    try:
-        response = call_llm(test_prompt)
-        print(f"Test successful. Response: {response}")
-    except Exception as e:
-        print(f"Test failed: {str(e)}")
+
 
 if __name__ == "__main__":
-    main()
+    test_prompt = "Hello, how are you?"
+    response = call_llm(test_prompt)
+    print(f"Test successful. Response: {response}")

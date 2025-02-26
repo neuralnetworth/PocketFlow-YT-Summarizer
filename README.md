@@ -13,7 +13,9 @@ Have a 5-hour YouTube video but no time to watch it? This tool pulls the main to
 
 - **Built With:** [Pocket Flow](https://github.com/The-Pocket/PocketFlow), a 100-line LLM framework that lets you build AI apps by chatting with LLM agents.
 
-- I created this in just a few hours using Pocket Flow + Cursor AI. A **step-by-step coding video tutorial** is on the way—stay tuned!
+- I created this in just a few hours using Pocket Flow + Cursor AI, and you can, too.
+ 
+-  A **step-by-step coding video tutorial** is on the way—stay tuned!
 
 ## How to Run
 

@@ -2,7 +2,7 @@
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
-Have a 5-hour YouTube video but no time to watch it? This tool pulls the main topics and explains them in simple terms, so you can catch up in just minutes.
+Have a 5-hour YouTube video but no time to watch it? This LLM application pulls the main topics and explains them in simple terms, so you can catch up in just minutes.
 
 <div align="center">
   <img src="./examples/front.png" width="700"/>

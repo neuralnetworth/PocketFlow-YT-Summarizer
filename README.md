@@ -5,19 +5,23 @@
 Have a 5-hour YouTube video but no time to watch it? This LLM application pulls the main topics and explains to you like you are 5, so you can catch up in just minutes.
 
 <div align="center">
-  <img src="./examples/front.png" width="700"/>
+  <img src="./assets/front.png" width="700"/>
 </div>
 
 
-- **Design Doc:** [docs/design.md](docs/design.md)
+- Design Doc: [docs/design.md](docs/design.md), Flow Source Code: [flow.py](flow.py)
 
-- **Flow Source Code:** [flow.py](flow.py)
+- **Built With:** [Pocket Flow](https://github.com/The-Pocket/PocketFlow), a 100-line LLM framework that lets LLM Agents build Apps for you
 
-- **Built With:** [Pocket Flow](https://github.com/The-Pocket/PocketFlow), a 100-line LLM framework that lets you build AI apps by chatting with LLM agents.
-
-- I built this in **just a few hours** using Pocket Flow + Cursor AI, and you can, too.
+- I built this in **just a few hours** using Pocket Flow + Cursor AI, and you can, too. Check out the Video Tutorial:
  
--  A **step-by-step video tutorial** on how I built it is on the way—stay tuned!
+<br>
+<div align="center">
+  <a href="https://youtu.be/wc9O-9mcObc" target="_blank">
+    <img src="./assets/youtube.png" width="500" alt="IMAGE ALT TEXT" style="cursor: pointer;">
+  </a>
+</div>
+<br>
 
 ## Example Outputs
 

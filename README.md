@@ -13,7 +13,9 @@ Have a 5-hour YouTube video but no time to watch it? This LLM application pulls 
 
 - **Built With:** [Pocket Flow](https://github.com/The-Pocket/PocketFlow), a 100-line LLM framework that lets LLM Agents build Apps for you
 
-- I built this in **just a few hours** using Pocket Flow + Cursor AI, and you can, too. Check out the Video Tutorial:
+- I built this in **just a few hours** using Pocket Flow + Cursor AI, and you can, too.
+
+- **Check out the Step-by-Step YouTube Tutorial:**
  
 <br>
 <div align="center">

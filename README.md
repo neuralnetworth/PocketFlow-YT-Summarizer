@@ -14,7 +14,7 @@ Design Doc: [docs/design.md](docs/design.md), Flow Source Code: [flow.py](flow.p
 
 ## I built this in just an hour, and you can, too.
 
-- **Built With [Pocket Flow](https://github.com/The-Pocket/PocketFlow), a 100-line LLM framework that lets LLM Agents (e.g., Cursor AI) build Apps for you
+- Built With [Pocket Flow](https://github.com/The-Pocket/PocketFlow), a 100-line LLM framework that lets LLM Agents (e.g., Cursor AI) build Apps for you
 
 - **Check out the Step-by-Step YouTube Tutorial:**
  

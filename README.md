@@ -8,12 +8,13 @@ Have a 5-hour YouTube video but no time to watch it? This LLM application pulls 
   <img src="./assets/front.png" width="700"/>
 </div>
 
+Design Doc: [docs/design.md](docs/design.md), Flow Source Code: [flow.py](flow.py)
 
-- Design Doc: [docs/design.md](docs/design.md), Flow Source Code: [flow.py](flow.py)
 
-- **Built With:** [Pocket Flow](https://github.com/The-Pocket/PocketFlow), a 100-line LLM framework that lets LLM Agents build Apps for you
 
-- I built this in **just a few hours** using Pocket Flow + Cursor AI, and you can, too.
+## I built this in just an hour, and you can, too.
+
+- **Built With [Pocket Flow](https://github.com/The-Pocket/PocketFlow), a 100-line LLM framework that lets LLM Agents (e.g., Cursor AI) build Apps for you
 
 - **Check out the Step-by-Step YouTube Tutorial:**
  

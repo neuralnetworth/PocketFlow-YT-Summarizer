@@ -10,6 +10,7 @@ Have a 5-hour YouTube video but no time to watch it? This LLM application pulls 
 
 Design Doc: [docs/design.md](docs/design.md), Flow Source Code: [flow.py](flow.py)
 
+Try running the code in your browser using the [demo notebook](https://colab.research.google.com/github/The-Pocket/Tutorial-Youtube-Made-Simple/blob/main/demo.ipynb).
 
 
 ## I built this in just an hour, and you can, too.

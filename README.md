@@ -24,9 +24,16 @@ Try running the code in your browser using the [demo notebook](https://colab.res
 
 ## How to Run
 
-1. Implement `call_llm` in [`utils/call_llm.py`](utils/call_llm.py) so it takes a string and returns a string.
+1. Set up LLM in [`utils/call_llm.py`](./utils/call_llm.py) by providing credentials.
+   
+   You can refer to [LLM Wrappers](https://the-pocket.github.io/PocketFlow/utility_function/llm.html) for example implementations.
+   
+   You can verify that it is correctly set up by running:
+   ```bash
+   python utils/call_llm.py
+   ```
 
-2. Install the dependencies and run the program:
+4. Install the dependencies and run the program:
 ```bash
 pip install -r requirements.txt
 python main.py --url "https://www.youtube.com/watch?v=example"

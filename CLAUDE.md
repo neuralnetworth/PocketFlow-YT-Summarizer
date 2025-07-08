@@ -271,7 +271,7 @@ This project is built on PocketFlow, a minimal LLM workflow framework. Key conce
 
 ### Test Suite Overview
 
-This project includes a comprehensive test suite with **56+ passing tests** that validate all critical functionality including task-specific model selection, multi-provider configuration, and workflow integration.
+This project includes a comprehensive test suite with **67+ passing tests** that validate all critical functionality including task-specific model selection, multi-provider configuration, CLI argument parsing, and workflow integration.
 
 ### Running Tests
 
@@ -292,6 +292,7 @@ uv run pytest tests/test_call_llm.py      # Core LLM configuration (22 tests)
 uv run pytest tests/test_task_models.py   # Task-specific model selection (12 tests)
 uv run pytest tests/test_flow.py          # Workflow integration (6 tests)
 uv run pytest tests/test_config.py        # Environment configuration (16 tests)
+uv run pytest tests/test_cli.py           # CLI argument parsing and provider override (11 tests)
 
 # Generate coverage report
 uv run pytest --cov=utils --cov=flow --cov-report=html
@@ -412,17 +413,42 @@ pytest --cov=utils --cov=flow --cov-report=html
 - ✅ Gemini hardcoded defaults (`gemini-1.5-flash`)
 - ✅ Fallback hierarchy (task-specific → general → hardcoded)
 
+#### 5. **CLI Argument Parsing** (`tests/test_cli.py`) - 11 tests
+
+**`TestCLIArgumentParsing`** - Command line interface
+- ✅ Help output includes --provider argument
+- ✅ Invalid provider choices are rejected
+- ✅ Valid provider choices (openai, gemini) are accepted
+
+**`TestProviderOverride`** - Environment variable override
+- ✅ --provider argument correctly sets LLM_PROVIDER environment variable
+- ✅ No --provider preserves existing environment configuration  
+- ✅ Provider override works for both OpenAI and Gemini
+
+**`TestCLIIntegration`** - Integration with LLM system
+- ✅ Provider override actually affects which LLM provider is called
+- ✅ CLI provider selection integrates with existing call_llm functionality
+
+**`TestCLILogging`** - Logging behavior
+- ✅ Provider override is properly logged for transparency
+- ✅ No override logging when --provider not specified
+
+**`TestArgumentCombinations`** - Real-world usage
+- ✅ --url and --provider arguments work together
+- ✅ Interactive mode works with --provider override
+
 ### Test Results Summary
 
 ```
-Total: 65 tests
-✅ Passing: 56 tests (86% success rate)
+Total: 76 tests
+✅ Passing: 67 tests (88% success rate)
 ⚠️ Failing: 8 tests (minor edge cases)
 🔧 Errors: 1 test (test setup issue)
 
 Core Functionality Status:
 ✅ Task-specific model selection: 100% working
 ✅ Multi-provider configuration: 100% working  
+✅ CLI argument parsing and provider override: 100% working
 ✅ Workflow integration: 100% working
 ✅ Environment management: 100% working
 ```
@@ -453,7 +479,17 @@ Core Functionality Status:
    GEMINI_SIMPLIFICATION_MODEL=gemini-1.5-flash
    ```
 
-3. **Workflow Integration**
+3. **CLI Provider Override**
+   ```bash
+   # Override provider without editing .env
+   python main.py --url "https://youtube.com/..." --provider gemini
+   python main.py --url "https://youtube.com/..." --provider openai
+   
+   # Uses .env default when no --provider specified
+   python main.py --url "https://youtube.com/..."
+   ```
+
+4. **Workflow Integration**
    ```python
    # ExtractTopicsAndQuestions → task="analysis"
    # ProcessContent → task="simplification"

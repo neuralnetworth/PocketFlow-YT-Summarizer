@@ -1,6 +1,8 @@
 from typing import List, Dict, Any, Tuple
 import yaml
 import logging
+import os
+import re
 from pocketflow import Node, BatchNode, Flow
 from utils.call_llm import call_llm
 from utils.youtube_processor import get_video_info
@@ -12,6 +14,23 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
+def sanitize_filename(filename):
+    """Sanitize a string to be safe for use as a filename"""
+    # Remove or replace characters that are invalid in filenames
+    # Keep alphanumeric, spaces, hyphens, and underscores
+    sanitized = re.sub(r'[<>:"/\\|?*]', '', filename)
+    # Replace multiple spaces with single space
+    sanitized = re.sub(r'\s+', ' ', sanitized)
+    # Remove leading/trailing whitespace
+    sanitized = sanitized.strip()
+    # Limit length to 200 characters to avoid filesystem issues
+    if len(sanitized) > 200:
+        sanitized = sanitized[:200].strip()
+    # If empty after sanitization, use a default name
+    if not sanitized:
+        sanitized = "youtube_video"
+    return sanitized
 
 # Define the specific nodes for the YouTube Content Processor
 
@@ -88,8 +107,11 @@ topics:
         # Extract YAML content
         yaml_content = response.split("```yaml")[1].split("```")[0].strip() if "```yaml" in response else response
         
-
         parsed = yaml.safe_load(yaml_content)
+        
+        if parsed is None:
+            raise ValueError("Failed to parse YAML response from LLM - parsed result is None")
+        
         raw_topics = parsed.get("topics", [])
         
         # Ensure we have at most 5 topics
@@ -151,7 +173,7 @@ class ProcessContent(BatchNode):
         topic_title = topic["title"]
         questions = [q["original"] for q in topic["questions"]]
         
-        prompt = f"""You are a content simplifier for children. Given a topic and questions from a YouTube video, rephrase the topic title and questions to be clearer, and provide simple ELI5 (Explain Like I'm 5) answers.
+        prompt = f"""You are an expert content processor. Given a topic and questions from a YouTube video, rephrase the topic title and questions to be clearer and more engaging, and provide concise, informative answers.
 
 TOPIC: {topic_title}
 
@@ -162,26 +184,28 @@ TRANSCRIPT EXCERPT:
 {transcript}
 
 For topic title and questions:
-1. Keep them catchy and interesting, but short
+1. Keep them engaging and clear, but concise
+2. Make them accessible to a general adult audience
 
 For your answers:
 1. Format them using HTML with <b> and <i> tags for highlighting. 
 2. Prefer lists with <ol> and <li> tags. Ideally, <li> followed by <b> for the key points.
-3. Quote important keywords but explain them in easy-to-understand language (e.g., "<b>Quantum computing</b> is like having a super-fast magical calculator")
-4. Keep answers interesting but short
+3. Define technical terms clearly but don't oversimplify (e.g., "<b>Quantum computing</b> uses quantum mechanical phenomena to process information exponentially faster than classical computers")
+4. Provide comprehensive yet concise explanations suitable for an educated audience
+5. Focus on clarity and accuracy rather than simplification
 
 Format your response in YAML:
 
 ```yaml
 rephrased_title: |
-    Interesting topic title in 10 words
+    Clear and engaging topic title
 questions:
   - original: |
         {questions[0] if len(questions) > 0 else ''}
     rephrased: |
-        Interesting question in 15 words
+        Clear, engaging question
     answer: |
-        Simple answer that a 5-year-old could understand in 100 words
+        Comprehensive, well-structured answer with proper technical depth
   - original: |
         {questions[1] if len(questions) > 1 else ''}
     ...
@@ -301,11 +325,26 @@ class GenerateHTML(Node):
         """Store HTML output in shared"""
         shared["html_output"] = exec_res
         
+        # Create output directory if it doesn't exist
+        output_dir = "output"
+        os.makedirs(output_dir, exist_ok=True)
+        
+        # Get video title and sanitize it for filename
+        video_info = prep_res["video_info"]
+        video_title = video_info.get("title", "youtube_video")
+        safe_filename = sanitize_filename(video_title)
+        
+        # Create full file path
+        file_path = os.path.join(output_dir, f"{safe_filename}.html")
+        
         # Write HTML to file
-        with open("output.html", "w") as f:
+        with open(file_path, "w", encoding="utf-8") as f:
             f.write(exec_res)
         
-        logger.info("Generated HTML output and saved to output.html")
+        # Store the file path in shared for reference
+        shared["output_file"] = file_path
+        
+        logger.info(f"Generated HTML output and saved to {file_path}")
         return "default"
 
 # Create the flow

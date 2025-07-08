@@ -43,12 +43,20 @@ def call_llm_openai(prompt: str, model: str = None, max_retries: int = 3) -> str
         try:
             if model is None:
                 model = os.getenv("OPENAI_MODEL", "gpt-4o")
-            response = client.chat.completions.create(
-                model=model,
-                messages=[{"role": "user", "content": prompt}],
-                max_tokens=1024,
-                temperature=0.7
-            )
+            # o3 models only support temperature=1 (default)
+            if model.startswith("o3"):
+                response = client.chat.completions.create(
+                    model=model,
+                    messages=[{"role": "user", "content": prompt}],
+                    max_completion_tokens=1024
+                )
+            else:
+                response = client.chat.completions.create(
+                    model=model,
+                    messages=[{"role": "user", "content": prompt}],
+                    max_completion_tokens=1024,
+                    temperature=0.7
+                )
             return response.choices[0].message.content
         
         except Exception as e:

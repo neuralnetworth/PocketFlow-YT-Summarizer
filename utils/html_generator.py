@@ -27,16 +27,16 @@ def html_generator(title, image_url, sections):
     rel=\"stylesheet\"
     href=\"https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css\"
   />
-  <!-- Google Font for a handwriting style -->
+  <!-- Google Font for a clean, professional style -->
   <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" />
   <link
-    href=\"https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap\"
+    href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap\"
     rel=\"stylesheet\"
   />
   <style>
     body {{
       background-color: #f7fafc;
-      font-family: 'Patrick Hand', sans-serif;
+      font-family: 'Inter', sans-serif;
     }}
     h1, h2 {{
       font-weight: 700;

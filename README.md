@@ -24,43 +24,143 @@ Try running the code in your browser using the [demo notebook](https://colab.res
 
 ## How to Run
 
-1. **Set up environment configuration:**
-   
-   Copy the example configuration:
-   ```bash
-   cp .env.example .env
-   ```
-   
-   Edit `.env` with your API keys and preferred models:
-   ```bash
-   # Choose your LLM provider
-   LLM_PROVIDER=openai
-   
-   # Add your API keys
-   OPENAI_API_KEY=your_openai_api_key_here
-   GEMINI_API_KEY=your_gemini_api_key_here
-   
-   # Task-specific models (optional - uses smart defaults)
-   OPENAI_ANALYSIS_MODEL=gpt-4o           # For complex topic analysis
-   OPENAI_SIMPLIFICATION_MODEL=gpt-4o-mini # For ELI5 explanations
-   ```
+### Quick Start with UV (Recommended)
 
-2. **Test your LLM configuration:**
-   ```bash
-   # Test current provider
-   python utils/call_llm.py
-   
-   # Test all configured providers
-   python utils/call_llm.py test
-   ```
+[UV](https://github.com/astral-sh/uv) is a fast Python package manager that handles virtual environments automatically.
 
-3. **Install dependencies and run:**
-   ```bash
-   pip install -r requirements.txt
-   python main.py --url "https://www.youtube.com/watch?v=example"
-   ```
+#### 1. **Install UV:**
 
-4. **View results:** Open `output.html` in your browser to see the ELI5 summary.
+**Linux/macOS:**
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+# Or with Homebrew: brew install uv
+```
+
+**Windows PowerShell:**
+```powershell
+irm https://astral.sh/uv/install.ps1 | iex
+# Or with Chocolatey: choco install uv
+# Or with Scoop: scoop install uv
+```
+
+#### 2. **Set up environment and install dependencies:**
+
+**Linux/macOS:**
+```bash
+# Clone and enter the project
+cd PocketFlow-YT-Summarizer
+
+# Install all dependencies (creates .venv automatically)
+uv sync
+
+# Copy and edit configuration
+cp .env.example .env
+# Edit .env with your API keys
+```
+
+**Windows PowerShell:**
+```powershell
+# Clone and enter the project
+cd PocketFlow-YT-Summarizer
+
+# Install all dependencies (creates .venv automatically)
+uv sync
+
+# Copy and edit configuration
+copy .env.example .env
+# Edit .env with your API keys
+```
+
+#### 3. **Configure your LLM provider:**
+
+Edit your `.env` file with your API keys and preferences:
+```env
+# Choose your LLM provider
+LLM_PROVIDER=openai
+
+# Add your API keys
+OPENAI_API_KEY=your_openai_api_key_here
+GEMINI_API_KEY=your_gemini_api_key_here
+
+# Task-specific models (optional - uses smart defaults)
+OPENAI_ANALYSIS_MODEL=gpt-4o           # For complex topic analysis
+OPENAI_SIMPLIFICATION_MODEL=gpt-4o-mini # For ELI5 explanations
+```
+
+#### 4. **Test your configuration:**
+
+**Linux/macOS:**
+```bash
+# Test current provider
+uv run python utils/call_llm.py
+
+# Test all configured providers
+uv run python utils/call_llm.py test
+```
+
+**Windows PowerShell:**
+```powershell
+# Test current provider
+uv run python utils/call_llm.py
+
+# Test all configured providers
+uv run python utils/call_llm.py test
+```
+
+#### 5. **Run the application:**
+
+**Linux/macOS:**
+```bash
+# Direct command
+uv run python main.py --url "https://www.youtube.com/watch?v=example"
+
+# Interactive mode (prompts for URL)
+uv run python main.py
+```
+
+**Windows PowerShell:**
+```powershell
+# Direct command
+uv run python main.py --url "https://www.youtube.com/watch?v=example"
+
+# Interactive mode (prompts for URL)
+uv run python main.py
+```
+
+#### 6. **View results:** 
+Open `output.html` in your browser to see the ELI5 summary.
+
+### Alternative: Traditional pip installation
+
+If you prefer using pip:
+
+#### **Linux/macOS:**
+```bash
+# Set up virtual environment
+python -m venv venv
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run application
+python main.py --url "https://www.youtube.com/watch?v=example"
+```
+
+#### **Windows PowerShell:**
+```powershell
+# Set up virtual environment
+python -m venv venv
+venv\Scripts\Activate.ps1
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run application
+python main.py --url "https://www.youtube.com/watch?v=example"
+```
+
+**Note:** Follow the same configuration steps (3-6) above, just replace `uv run python` with `python`
 
 ## LLM Configuration
 
@@ -119,6 +219,50 @@ GEMINI_SIMPLIFICATION_MODEL=gemini-1.5-flash
 This project includes a comprehensive test suite with **56+ passing tests** covering all critical functionality.
 
 ### Quick Test Commands
+
+**With UV (Recommended):**
+
+*Linux/macOS:*
+```bash
+# Install dependencies and run all tests
+uv sync --extra dev
+uv run pytest
+
+# Run with detailed output
+uv run pytest -v
+
+# Run specific test categories
+uv run pytest tests/test_task_models.py   # Task-specific model selection (12 tests)
+uv run pytest tests/test_call_llm.py      # Core LLM configuration (22 tests) 
+uv run pytest tests/test_flow.py          # Workflow integration (6 tests)
+uv run pytest tests/test_config.py        # Environment configuration (16 tests)
+
+# Test coverage report
+uv run pytest --cov=utils --cov=flow --cov-report=html
+open htmlcov/index.html  # View coverage report
+```
+
+*Windows PowerShell:*
+```powershell
+# Install dependencies and run all tests
+uv sync --extra dev
+uv run pytest
+
+# Run with detailed output
+uv run pytest -v
+
+# Run specific test categories
+uv run pytest tests/test_task_models.py   # Task-specific model selection (12 tests)
+uv run pytest tests/test_call_llm.py      # Core LLM configuration (22 tests) 
+uv run pytest tests/test_flow.py          # Workflow integration (6 tests)
+uv run pytest tests/test_config.py        # Environment configuration (16 tests)
+
+# Test coverage report
+uv run pytest --cov=utils --cov=flow --cov-report=html
+start htmlcov/index.html  # View coverage report
+```
+
+**With pip:**
 ```bash
 # Install test dependencies and run all tests
 pip install -r requirements.txt
@@ -126,12 +270,6 @@ pytest
 
 # Run with detailed output
 pytest -v
-
-# Run specific test categories
-pytest tests/test_task_models.py   # Task-specific model selection (12 tests)
-pytest tests/test_call_llm.py      # Core LLM configuration (22 tests) 
-pytest tests/test_flow.py          # Workflow integration (6 tests)
-pytest tests/test_config.py        # Environment configuration (16 tests)
 
 # Test coverage report
 pytest --cov=utils --cov=flow --cov-report=html

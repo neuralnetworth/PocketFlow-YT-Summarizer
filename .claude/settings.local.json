@@ -3,7 +3,13 @@
     "allow": [
       "Bash(python3:*)",
       "Bash(pip install:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(export:*)",
+      "Bash(uv sync:*)",
+      "Bash(uv run pytest:*)",
+      "Bash(uv run:*)",
+      "Bash(ls:*)",
+      "Bash(chmod:*)"
     ],
     "deny": []
   }

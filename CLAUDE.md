@@ -8,16 +8,41 @@ PocketFlow-YT-Summarizer is an LLM-powered application that converts long YouTub
 
 ## Common Development Commands
 
-### Setup and Run
+### Setup and Run with UV (Recommended)
+
+This project uses [UV](https://github.com/astral-sh/uv) for fast dependency management and virtual environment handling.
+
 ```bash
+# Initial setup
+uv sync                    # Install dependencies (creates .venv automatically)
+uv sync --extra dev        # Install with development dependencies
+
+# Run the application
+uv run python main.py --url "https://www.youtube.com/watch?v=VIDEO_ID"
+uv run python main.py      # Interactive mode (prompts for URL)
+
+# Using convenience scripts
+./scripts/run.sh --url "https://www.youtube.com/watch?v=VIDEO_ID"
+./scripts/test.sh -v       # Run tests
+
+# Development tools
+uv run python utils/call_llm.py        # Test LLM configuration
+uv run python utils/call_llm.py test   # Test all providers
+uv run ruff check                      # Lint code (when ruff is added)
+uv run mypy utils/                     # Type checking (when mypy is added)
+```
+
+### Alternative: Traditional pip workflow
+```bash
+# Setup virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
 # Install dependencies
 pip install -r requirements.txt
 
-# Run with YouTube URL
+# Run (same commands as above, without 'uv run')
 python main.py --url "https://www.youtube.com/watch?v=VIDEO_ID"
-
-# Run interactively (prompts for URL)
-python main.py
 ```
 
 ### Output
@@ -63,6 +88,70 @@ The application uses the PocketFlow framework with a 4-node workflow:
 ```
 
 ## Development Guidelines
+
+### Dependency Management with UV
+
+This project uses UV for fast, reliable dependency management:
+
+#### **Why UV?**
+- **Speed**: 10-100x faster than pip for most operations
+- **Reliability**: Deterministic dependency resolution with `uv.lock`
+- **Simplicity**: Automatically handles virtual environments
+- **Modern**: Built in Rust, designed for Python 3.8+
+
+#### **Key Files:**
+- **`pyproject.toml`**: Project configuration, dependencies, and metadata
+- **`uv.lock`**: Lockfile with exact dependency versions (commit this!)
+- **`.venv/`**: Virtual environment (auto-created, ignore in git)
+
+#### **Common UV Workflows:**
+
+**Adding Dependencies:**
+```bash
+# Add runtime dependency
+uv add requests
+uv add "openai>=1.0.0"
+
+# Add development dependency
+uv add --dev pytest
+uv add --dev "pytest-cov>=4.0.0"
+
+# Update all dependencies
+uv sync --upgrade
+```
+
+**Managing Environments:**
+```bash
+# Create/sync environment with exact lockfile versions
+uv sync                  # Production dependencies only
+uv sync --extra dev      # Include development dependencies
+uv sync --frozen         # Use exact lockfile versions (CI/CD)
+
+# Run commands in the virtual environment
+uv run python main.py    # Run application
+uv run pytest           # Run tests
+uv run python -c "import sys; print(sys.prefix)"  # Show venv path
+
+# Manual venv activation (if needed)
+source .venv/bin/activate  # Linux/macOS
+# or
+.venv\Scripts\activate     # Windows
+```
+
+**CI/CD Best Practices:**
+```bash
+# In CI/CD pipelines
+uv sync --frozen --extra dev  # Install exact versions
+uv run pytest                 # Run tests
+```
+
+#### **Migration from pip:**
+The project supports both UV and pip workflows. To migrate:
+
+1. **Keep `requirements.txt`** for backward compatibility
+2. **Use `pyproject.toml`** for new dependency management
+3. **Commit `uv.lock`** for reproducible builds
+4. **Update CI/CD** to use UV for faster builds
 
 ### LLM Configuration
 - The LLM configuration is in `utils/call_llm.py`
@@ -182,6 +271,33 @@ This project includes a comprehensive test suite with **56+ passing tests** that
 
 ### Running Tests
 
+**With UV (Recommended):**
+```bash
+# Install dependencies and run all tests
+uv sync --extra dev
+uv run pytest
+
+# Run with detailed output
+uv run pytest -v
+
+# Use convenient test script
+./scripts/test.sh -v
+
+# Run specific test categories
+uv run pytest tests/test_call_llm.py      # Core LLM configuration (22 tests)
+uv run pytest tests/test_task_models.py   # Task-specific model selection (12 tests)
+uv run pytest tests/test_flow.py          # Workflow integration (6 tests)
+uv run pytest tests/test_config.py        # Environment configuration (16 tests)
+
+# Generate coverage report
+uv run pytest --cov=utils --cov=flow --cov-report=html
+open htmlcov/index.html  # View coverage report
+
+# Quick test validation for development
+uv run pytest tests/test_call_llm.py::TestGetModelForTask -v  # Quick sanity check
+```
+
+**With pip:**
 ```bash
 # Install dependencies and run all tests
 pip install -r requirements.txt
@@ -190,15 +306,8 @@ pytest
 # Run with detailed output
 pytest -v
 
-# Run specific test categories
-pytest tests/test_call_llm.py      # Core LLM configuration (22 tests)
-pytest tests/test_task_models.py   # Task-specific model selection (12 tests)
-pytest tests/test_flow.py          # Workflow integration (6 tests)
-pytest tests/test_config.py        # Environment configuration (16 tests)
-
 # Generate coverage report
 pytest --cov=utils --cov=flow --cov-report=html
-open htmlcov/index.html  # View coverage report
 ```
 
 ### Test Categories and Coverage

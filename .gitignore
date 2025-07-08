@@ -11,6 +11,16 @@ out/
 *.pyc
 __pycache__/
 
+# Python virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python package management
+*.egg-info/
+pip-wheel-metadata/
+
 # Environment files
 .env
 .env.local
@@ -53,6 +63,9 @@ Thumbs.db
 # Testing
 coverage/
 .nyc_output/
+.pytest_cache/
+htmlcov/
+.coverage
 
 # Temporary files
 *.tmp

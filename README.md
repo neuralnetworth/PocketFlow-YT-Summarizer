@@ -24,22 +24,95 @@ Try running the code in your browser using the [demo notebook](https://colab.res
 
 ## How to Run
 
-1. Set up LLM in [`utils/call_llm.py`](./utils/call_llm.py) by providing credentials.
+1. **Set up environment configuration:**
    
-   You can refer to [LLM Wrappers](https://the-pocket.github.io/PocketFlow/utility_function/llm.html) for example implementations.
-   
-   You can verify that it is correctly set up by running:
+   Copy the example configuration:
    ```bash
-   python utils/call_llm.py
+   cp .env.example .env
+   ```
+   
+   Edit `.env` with your API keys and preferred models:
+   ```bash
+   # Choose your LLM provider
+   LLM_PROVIDER=openai
+   
+   # Add your API keys
+   OPENAI_API_KEY=your_openai_api_key_here
+   GEMINI_API_KEY=your_gemini_api_key_here
+   
+   # Task-specific models (optional - uses smart defaults)
+   OPENAI_ANALYSIS_MODEL=gpt-4o           # For complex topic analysis
+   OPENAI_SIMPLIFICATION_MODEL=gpt-4o-mini # For ELI5 explanations
    ```
 
-4. Install the dependencies and run the program:
+2. **Test your LLM configuration:**
+   ```bash
+   # Test current provider
+   python utils/call_llm.py
+   
+   # Test all configured providers
+   python utils/call_llm.py test
+   ```
+
+3. **Install dependencies and run:**
+   ```bash
+   pip install -r requirements.txt
+   python main.py --url "https://www.youtube.com/watch?v=example"
+   ```
+
+4. **View results:** Open `output.html` in your browser to see the ELI5 summary.
+
+## LLM Configuration
+
+This application supports **task-specific model selection** for optimal performance and cost:
+
+### **Analysis Tasks** (Complex Reasoning)
+- **Purpose:** Extract topics and generate questions from video transcripts
+- **Recommended Models:** `gpt-4o`, `gemini-1.5-pro` (high reasoning capability)
+- **Configuration:** `OPENAI_ANALYSIS_MODEL`, `GEMINI_ANALYSIS_MODEL`
+
+### **Simplification Tasks** (Clear Communication) 
+- **Purpose:** Rephrase content and create ELI5 explanations
+- **Recommended Models:** `gpt-4o-mini`, `gemini-1.5-flash` (fast and cost-effective)
+- **Configuration:** `OPENAI_SIMPLIFICATION_MODEL`, `GEMINI_SIMPLIFICATION_MODEL`
+
+### **Supported Providers & Models:**
+
+**OpenAI:**
+- `gpt-4o` - Latest GPT-4 Omni (recommended for analysis)
+- `gpt-4o-mini` - Faster, cheaper (recommended for simplification)
+- `gpt-4-turbo` - Previous generation
+- `gpt-3.5-turbo` - Most economical
+
+**Google Gemini:**
+- `gemini-1.5-pro` - Most capable (recommended for analysis)
+- `gemini-1.5-flash` - Fast and efficient (recommended for simplification)
+
+### **Example Configurations:**
+
+**Cost-Optimized Setup:**
 ```bash
-pip install -r requirements.txt
-python main.py --url "https://www.youtube.com/watch?v=example"
+LLM_PROVIDER=openai
+OPENAI_ANALYSIS_MODEL=gpt-4o-mini
+OPENAI_SIMPLIFICATION_MODEL=gpt-3.5-turbo
 ```
 
-3. When it's done, open output.html (created in the project folder) to see the results.
+**Quality-Optimized Setup:**
+```bash
+LLM_PROVIDER=openai
+OPENAI_ANALYSIS_MODEL=gpt-4o
+OPENAI_SIMPLIFICATION_MODEL=gpt-4o-mini
+```
+
+**Mixed Provider Setup:**
+```bash
+LLM_PROVIDER=openai
+OPENAI_ANALYSIS_MODEL=gpt-4o
+OPENAI_SIMPLIFICATION_MODEL=gpt-4o-mini
+# Fallback to Gemini if needed
+GEMINI_ANALYSIS_MODEL=gemini-1.5-pro
+GEMINI_SIMPLIFICATION_MODEL=gemini-1.5-flash
+```
 
 ## I built this in just an hour, and you can, too.
 

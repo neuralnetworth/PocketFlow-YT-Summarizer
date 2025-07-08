@@ -83,7 +83,7 @@ topics:
 ```
         """
         
-        response = call_llm(prompt)
+        response = call_llm(prompt, task="analysis")
         
         # Extract YAML content
         yaml_content = response.split("```yaml")[1].split("```")[0].strip() if "```yaml" in response else response
@@ -188,7 +188,7 @@ questions:
 ```
         """
         
-        response = call_llm(prompt)
+        response = call_llm(prompt, task="simplification")
         
         # Extract YAML content
         yaml_content = response.split("```yaml")[1].split("```")[0].strip() if "```yaml" in response else response

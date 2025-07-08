@@ -30,7 +30,7 @@ def validate_provider_config(provider: str) -> None:
     else:
         raise ValueError(f"Unsupported provider: {provider}. Supported providers: openai, gemini")
 
-def call_llm_openai(prompt: str, max_retries: int = 3) -> str:
+def call_llm_openai(prompt: str, model: str = None, max_retries: int = 3) -> str:
     """Call OpenAI's API with retry logic."""
     try:
         from openai import OpenAI
@@ -41,7 +41,8 @@ def call_llm_openai(prompt: str, max_retries: int = 3) -> str:
     
     for attempt in range(max_retries):
         try:
-            model = os.getenv("OPENAI_MODEL", "gpt-4o")
+            if model is None:
+                model = os.getenv("OPENAI_MODEL", "gpt-4o")
             response = client.chat.completions.create(
                 model=model,
                 messages=[{"role": "user", "content": prompt}],
@@ -57,7 +58,7 @@ def call_llm_openai(prompt: str, max_retries: int = 3) -> str:
             else:
                 raise
 
-def call_llm_gemini(prompt: str, max_retries: int = 3) -> str:
+def call_llm_gemini(prompt: str, model: str = None, max_retries: int = 3) -> str:
     """Call Google Gemini's API with retry logic."""
     try:
         import google.generativeai as genai
@@ -65,12 +66,13 @@ def call_llm_gemini(prompt: str, max_retries: int = 3) -> str:
         raise ImportError("Google Generative AI package is required. Install it with: pip install google-generativeai")
     
     genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-    model_name = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
-    model = genai.GenerativeModel(model_name)
+    if model is None:
+        model = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
+    genai_model = genai.GenerativeModel(model)
     
     for attempt in range(max_retries):
         try:
-            response = model.generate_content(
+            response = genai_model.generate_content(
                 prompt,
                 generation_config=genai.types.GenerationConfig(
                     max_output_tokens=1024,
@@ -86,12 +88,38 @@ def call_llm_gemini(prompt: str, max_retries: int = 3) -> str:
             else:
                 raise
 
-def call_llm(prompt: str) -> str:
+def get_model_for_task(provider: str, task: str = None) -> str:
+    """Get the appropriate model for a given provider and task type."""
+    provider = provider.lower()
+    
+    if task:
+        task = task.upper()
+        if provider == "openai":
+            if task == "ANALYSIS":
+                return os.getenv("OPENAI_ANALYSIS_MODEL", os.getenv("OPENAI_MODEL", "gpt-4o"))
+            elif task == "SIMPLIFICATION":
+                return os.getenv("OPENAI_SIMPLIFICATION_MODEL", os.getenv("OPENAI_MODEL", "gpt-4o"))
+        elif provider == "gemini":
+            if task == "ANALYSIS":
+                return os.getenv("GEMINI_ANALYSIS_MODEL", os.getenv("GEMINI_MODEL", "gemini-1.5-flash"))
+            elif task == "SIMPLIFICATION":
+                return os.getenv("GEMINI_SIMPLIFICATION_MODEL", os.getenv("GEMINI_MODEL", "gemini-1.5-flash"))
+    
+    # Fallback to general model
+    if provider == "openai":
+        return os.getenv("OPENAI_MODEL", "gpt-4o")
+    elif provider == "gemini":
+        return os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
+    
+    raise ValueError(f"Unsupported provider: {provider}")
+
+def call_llm(prompt: str, task: str = None) -> str:
     """
     Call the configured LLM provider based on the LLM_PROVIDER environment variable.
     
     Args:
         prompt: The prompt to send to the LLM
+        task: Optional task type for model selection ("analysis" or "simplification")
         
     Returns:
         The LLM's response as a string
@@ -105,18 +133,21 @@ def call_llm(prompt: str) -> str:
     # Validate configuration
     validate_provider_config(provider)
     
-    logger.info(f"Using LLM provider: {provider}")
+    # Get the appropriate model for this task
+    model = get_model_for_task(provider, task)
+    
+    logger.info(f"Using LLM provider: {provider}, model: {model}, task: {task or 'general'}")
     
     try:
         if provider == "openai":
-            return call_llm_openai(prompt)
+            return call_llm_openai(prompt, model=model)
         elif provider == "gemini":
-            return call_llm_gemini(prompt)
+            return call_llm_gemini(prompt, model=model)
         else:
             raise ValueError(f"Unsupported provider: {provider}")
             
     except Exception as e:
-        logger.error(f"LLM call failed with provider {provider}: {e}")
+        logger.error(f"LLM call failed with provider {provider}, model {model}: {e}")
         raise
 
 def test_provider(provider: str) -> bool:

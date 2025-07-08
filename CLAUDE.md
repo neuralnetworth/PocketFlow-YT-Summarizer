@@ -66,10 +66,27 @@ The application uses the PocketFlow framework with a 4-node workflow:
 
 ### LLM Configuration
 - The LLM configuration is in `utils/call_llm.py`
-- Supports multiple providers: OpenAI (gpt-4o) and Google Gemini (gemini-1.5-flash)
+- Supports multiple providers: OpenAI and Google Gemini
+- **Task-specific model selection** for optimal performance and cost
 - Switch providers by setting `LLM_PROVIDER` environment variable
 - Implements retry logic with exponential backoff for both providers
 - Uses YAML for structured outputs (more reliable than JSON)
+
+#### Task-Specific Model Configuration
+
+The application makes 2 distinct types of LLM calls:
+
+1. **Analysis Tasks** (`task="analysis"`) - Complex reasoning for topic extraction
+   - **Node:** `ExtractTopicsAndQuestions` 
+   - **Purpose:** Analyze full video transcript, identify themes, generate questions
+   - **Complexity:** High cognitive load, pattern recognition
+   - **Recommended:** Use reasoning models (`gpt-4o`, `gemini-1.5-pro`)
+
+2. **Simplification Tasks** (`task="simplification"`) - Content rephrasing and ELI5
+   - **Node:** `ProcessContent` (BatchNode - runs multiple times)
+   - **Purpose:** Rephrase topics/questions, create simple explanations
+   - **Complexity:** Medium - clear communication over deep analysis
+   - **Recommended:** Use fast models (`gpt-4o-mini`, `gemini-1.5-flash`)
 
 #### Environment Variables
 Set these in your `.env` file:
@@ -77,7 +94,16 @@ Set these in your `.env` file:
 # Choose provider: openai or gemini
 LLM_PROVIDER=openai
 
-# Model Configuration (optional - defaults shown)
+# Task-Specific Model Configuration
+# ANALYSIS: Complex reasoning tasks (topic extraction, content analysis)
+OPENAI_ANALYSIS_MODEL=gpt-4o
+GEMINI_ANALYSIS_MODEL=gemini-1.5-pro
+
+# SIMPLIFICATION: Simple tasks (rephrasing, ELI5 answers) 
+OPENAI_SIMPLIFICATION_MODEL=gpt-4o-mini
+GEMINI_SIMPLIFICATION_MODEL=gemini-1.5-flash
+
+# General Model Configuration (fallback if task-specific not set)
 OPENAI_MODEL=gpt-4o
 GEMINI_MODEL=gemini-1.5-flash
 
@@ -86,17 +112,41 @@ OPENAI_API_KEY=your_openai_api_key_here
 GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
-#### Available Models
+#### Available Models & Recommendations
+
 **OpenAI Models:**
-- `gpt-4o` (default) - Latest GPT-4 Omni model
-- `gpt-4o-mini` - Faster, cheaper version
+- `gpt-4o` - Latest GPT-4 Omni model (best for analysis)
+- `gpt-4o-mini` - Faster, cheaper version (ideal for simplification)
 - `gpt-4-turbo` - Previous generation GPT-4 Turbo
-- `gpt-3.5-turbo` - Faster, more economical option
+- `gpt-3.5-turbo` - Most economical option
 
 **Gemini Models:**
-- `gemini-1.5-flash` (default) - Fast and efficient
-- `gemini-1.5-pro` - More capable, slower
-- `gemini-pro` - Previous generation (if available)
+- `gemini-1.5-pro` - Most capable model (best for analysis)
+- `gemini-1.5-flash` - Fast and efficient (ideal for simplification)
+
+#### Optimization Examples
+
+**Cost-Optimized Configuration:**
+```bash
+LLM_PROVIDER=openai
+OPENAI_ANALYSIS_MODEL=gpt-4o-mini      # Cheaper for analysis
+OPENAI_SIMPLIFICATION_MODEL=gpt-3.5-turbo # Cheapest for simplification
+```
+
+**Quality-Optimized Configuration:**
+```bash  
+LLM_PROVIDER=openai
+OPENAI_ANALYSIS_MODEL=gpt-4o           # Best reasoning for analysis
+OPENAI_SIMPLIFICATION_MODEL=gpt-4o-mini # Fast enough for simplification
+```
+
+**Hybrid Provider Configuration:**
+```bash
+# Use different providers for different tasks if desired
+LLM_PROVIDER=openai
+OPENAI_ANALYSIS_MODEL=gpt-4o
+GEMINI_SIMPLIFICATION_MODEL=gemini-1.5-flash
+```
 
 #### Testing LLM Providers
 ```bash

@@ -100,6 +100,9 @@ uv run python main.py --url "https://www.youtube.com/watch?v=example"
 
 # Interactive mode (prompts for URL)
 uv run python main.py
+
+# Override LLM provider (instead of editing .env)
+uv run python main.py --url "https://www.youtube.com/watch?v=example" --provider gemini
 ```
 
 **Windows PowerShell:**
@@ -109,10 +112,13 @@ uv run python main.py --url "https://www.youtube.com/watch?v=example"
 
 # Interactive mode (prompts for URL)
 uv run python main.py
+
+# Override LLM provider (instead of editing .env)
+uv run python main.py --url "https://www.youtube.com/watch?v=example" --provider gemini
 ```
 
 #### 6. **View results:** 
-Open `output.html` in your browser to see the ELI5 summary.
+The application saves the output HTML file in the `output/` directory using the video title as the filename. Open the generated HTML file in your browser to see the summary.
 
 ### Alternative: Traditional pip installation
 

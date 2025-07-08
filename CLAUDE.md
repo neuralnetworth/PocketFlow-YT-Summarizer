@@ -21,6 +21,10 @@ uv sync --extra dev        # Install with development dependencies
 uv run python main.py --url "https://www.youtube.com/watch?v=VIDEO_ID"
 uv run python main.py      # Interactive mode (prompts for URL)
 
+# Override LLM provider without editing .env
+uv run python main.py --url "https://www.youtube.com/watch?v=VIDEO_ID" --provider gemini
+uv run python main.py --url "https://www.youtube.com/watch?v=VIDEO_ID" --provider openai
+
 # Using convenience scripts
 ./scripts/run.sh --url "https://www.youtube.com/watch?v=VIDEO_ID"
 ./scripts/test.sh -v       # Run tests
@@ -46,7 +50,7 @@ python main.py --url "https://www.youtube.com/watch?v=VIDEO_ID"
 ```
 
 ### Output
-The application generates `output.html` in the project directory.
+The application saves HTML files in the `output/` directory, using the YouTube video title as the filename.
 
 ## Architecture
 

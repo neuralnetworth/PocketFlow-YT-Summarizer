@@ -20,12 +20,19 @@ def main():
     
     # Parse command line arguments
     parser = argparse.ArgumentParser(
-        description="Process a YouTube video to extract topics, questions, and generate ELI5 answers."
+        description="Process a YouTube video to extract topics, questions, and generate informative answers."
     )
     parser.add_argument(
         "--url", 
         type=str, 
         help="YouTube video URL to process",
+        required=False
+    )
+    parser.add_argument(
+        "--provider",
+        type=str,
+        choices=['openai', 'gemini'],
+        help="LLM provider to use (overrides .env setting)",
         required=False
     )
     args = parser.parse_args()
@@ -34,6 +41,11 @@ def main():
     url = args.url
     if not url:
         url = input("Enter YouTube URL to process: ")
+    
+    # Override LLM provider if specified
+    if args.provider:
+        os.environ["LLM_PROVIDER"] = args.provider
+        logger.info(f"Using LLM provider from CLI: {args.provider}")
     
     logger.info(f"Starting YouTube content processor for URL: {url}")
 

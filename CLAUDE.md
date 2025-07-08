@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-PocketFlow-YT-Summarizer is an LLM-powered application that converts long YouTube videos into concise, easy-to-understand summaries. It extracts transcripts, identifies key topics, generates questions, and provides ELI5 (Explain Like I'm 5) answers.
+PocketFlow-YT-Summarizer is an LLM-powered application that converts long YouTube videos into concise, professional summaries. It extracts transcripts, identifies key topics, generates questions, and provides comprehensive answers. Features dual provider support for comparative analysis using both OpenAI and Gemini models.
 
 ## Common Development Commands
 
@@ -17,11 +17,11 @@ This project uses [UV](https://github.com/astral-sh/uv) for fast dependency mana
 uv sync                    # Install dependencies (creates .venv automatically)
 uv sync --extra dev        # Install with development dependencies
 
-# Run the application
+# Run the application (dual provider mode - generates 2 files)
 uv run python main.py --url "https://www.youtube.com/watch?v=VIDEO_ID"
 uv run python main.py      # Interactive mode (prompts for URL)
 
-# Override LLM provider without editing .env
+# Use specific provider (generates 1 file)
 uv run python main.py --url "https://www.youtube.com/watch?v=VIDEO_ID" --provider gemini
 uv run python main.py --url "https://www.youtube.com/watch?v=VIDEO_ID" --provider openai
 
@@ -50,7 +50,9 @@ python main.py --url "https://www.youtube.com/watch?v=VIDEO_ID"
 ```
 
 ### Output
-The application saves HTML files in the `output/` directory, using the YouTube video title as the filename.
+The application saves HTML files in the `output/` directory with provider names appended:
+- **Dual mode** (default): `video_title_openai.html` + `video_title_gemini.html`
+- **Single provider**: `video_title_[provider].html`
 
 ## Architecture
 
@@ -175,9 +177,9 @@ The application makes 2 distinct types of LLM calls:
    - **Complexity:** High cognitive load, pattern recognition
    - **Recommended:** Use reasoning models (`gpt-4o`, `gemini-1.5-pro`)
 
-2. **Simplification Tasks** (`task="simplification"`) - Content rephrasing and ELI5
+2. **Simplification Tasks** (`task="simplification"`) - Content rephrasing and professional explanations
    - **Node:** `ProcessContent` (BatchNode - runs multiple times)
-   - **Purpose:** Rephrase topics/questions, create simple explanations
+   - **Purpose:** Rephrase topics/questions, create comprehensive explanations
    - **Complexity:** Medium - clear communication over deep analysis
    - **Recommended:** Use fast models (`gpt-4o-mini`, `gemini-1.5-flash`)
 
@@ -190,9 +192,9 @@ LLM_PROVIDER=openai
 # Task-Specific Model Configuration
 # ANALYSIS: Complex reasoning tasks (topic extraction, content analysis)
 OPENAI_ANALYSIS_MODEL=gpt-4o
-GEMINI_ANALYSIS_MODEL=gemini-1.5-pro
+GEMINI_ANALYSIS_MODEL=gemini-2.5-pro
 
-# SIMPLIFICATION: Simple tasks (rephrasing, ELI5 answers) 
+# SIMPLIFICATION: Content rephrasing and comprehensive explanations
 OPENAI_SIMPLIFICATION_MODEL=gpt-4o-mini
 GEMINI_SIMPLIFICATION_MODEL=gemini-1.5-flash
 
@@ -214,7 +216,8 @@ GEMINI_API_KEY=your_gemini_api_key_here
 - `gpt-3.5-turbo` - Most economical option
 
 **Gemini Models:**
-- `gemini-1.5-pro` - Most capable model (best for analysis)
+- `gemini-2.5-pro` - Latest and most capable model (best for analysis)
+- `gemini-1.5-pro` - Highly capable model (good for analysis)
 - `gemini-1.5-flash` - Fast and efficient (ideal for simplification)
 
 #### Optimization Examples
@@ -240,6 +243,24 @@ LLM_PROVIDER=openai
 OPENAI_ANALYSIS_MODEL=gpt-4o
 GEMINI_SIMPLIFICATION_MODEL=gemini-1.5-flash
 ```
+
+#### Dual Provider Mode (New Feature!)
+
+When no `--provider` is specified, the application automatically runs with **both OpenAI and Gemini**:
+
+```bash
+# Generates 2 files: video_title_openai.html + video_title_gemini.html
+python main.py --url "https://youtube.com/..."
+
+# Use specific provider (generates 1 file)
+python main.py --url "https://youtube.com/..." --provider openai
+```
+
+**Benefits:**
+- Compare responses from different AI models
+- Maximize insights by leveraging both providers' strengths
+- Built-in redundancy if one provider fails
+- Cost-efficient: only pay for providers you have API keys for
 
 #### Testing LLM Providers
 ```bash
@@ -347,7 +368,7 @@ pytest --cov=utils --cov=flow --cov-report=html
 #### 2. **Task-Specific Integration** (`tests/test_task_models.py`) - 12 tests
 
 **`TestTaskSpecificModelSelection`** - Core task routing
-- ✅ Analysis tasks use reasoning models (`gpt-4o`, `gemini-1.5-pro`)
+- ✅ Analysis tasks use reasoning models (`gpt-4o`, `gemini-2.5-pro`)
 - ✅ Simplification tasks use fast models (`gpt-4o-mini`, `gemini-1.5-flash`)
 - ✅ OpenAI vs Gemini task-specific model selection
 
@@ -447,8 +468,8 @@ Total: 76 tests
 
 Core Functionality Status:
 ✅ Task-specific model selection: 100% working
-✅ Multi-provider configuration: 100% working  
-✅ CLI argument parsing and provider override: 100% working
+✅ Multi-provider configuration: 100% working (including Gemini 2.5 Pro)
+✅ CLI argument parsing and dual provider mode: 100% working
 ✅ Workflow integration: 100% working
 ✅ Environment management: 100% working
 ```
@@ -459,7 +480,7 @@ Core Functionality Status:
    ```python
    # Analysis uses reasoning model
    call_llm("Analyze this transcript", task="analysis")  
-   # → Uses gpt-4o or gemini-1.5-pro
+   # → Uses gpt-4o or gemini-2.5-pro
    
    # Simplification uses fast model  
    call_llm("Explain simply", task="simplification")
@@ -475,18 +496,19 @@ Core Functionality Status:
    
    # Gemini setup
    LLM_PROVIDER=gemini  
-   GEMINI_ANALYSIS_MODEL=gemini-1.5-pro
+   GEMINI_ANALYSIS_MODEL=gemini-2.5-pro
    GEMINI_SIMPLIFICATION_MODEL=gemini-1.5-flash
    ```
 
-3. **CLI Provider Override**
+3. **CLI Provider Override and Dual Mode**
    ```bash
-   # Override provider without editing .env
+   # Dual provider mode (default - generates 2 files)
+   python main.py --url "https://youtube.com/..."
+   # → Generates video_title_openai.html + video_title_gemini.html
+   
+   # Single provider override
    python main.py --url "https://youtube.com/..." --provider gemini
    python main.py --url "https://youtube.com/..." --provider openai
-   
-   # Uses .env default when no --provider specified
-   python main.py --url "https://youtube.com/..."
    ```
 
 4. **Workflow Integration**

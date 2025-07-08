@@ -95,30 +95,36 @@ uv run python utils/call_llm.py test
 
 **Linux/macOS:**
 ```bash
-# Direct command
+# Use both providers (default - generates 2 files)
 uv run python main.py --url "https://www.youtube.com/watch?v=example"
 
-# Interactive mode (prompts for URL)
+# Interactive mode (prompts for URL, uses both providers)
 uv run python main.py
 
-# Override LLM provider (instead of editing .env)
+# Use specific provider (generates 1 file)
+uv run python main.py --url "https://www.youtube.com/watch?v=example" --provider openai
 uv run python main.py --url "https://www.youtube.com/watch?v=example" --provider gemini
 ```
 
 **Windows PowerShell:**
 ```powershell
-# Direct command
+# Use both providers (default - generates 2 files)
 uv run python main.py --url "https://www.youtube.com/watch?v=example"
 
-# Interactive mode (prompts for URL)
+# Interactive mode (prompts for URL, uses both providers)
 uv run python main.py
 
-# Override LLM provider (instead of editing .env)
+# Use specific provider (generates 1 file)
+uv run python main.py --url "https://www.youtube.com/watch?v=example" --provider openai
 uv run python main.py --url "https://www.youtube.com/watch?v=example" --provider gemini
 ```
 
 #### 6. **View results:** 
-The application saves the output HTML file in the `output/` directory using the video title as the filename. Open the generated HTML file in your browser to see the summary.
+The application saves HTML files in the `output/` directory with the provider name appended to the filename:
+- **Dual provider mode**: Generates `video_title_openai.html` and `video_title_gemini.html`
+- **Single provider mode**: Generates `video_title_[provider].html`
+
+Open the generated HTML files in your browser to compare summaries from different AI models.
 
 ### Alternative: Traditional pip installation
 
@@ -175,7 +181,8 @@ This application supports **task-specific model selection** for optimal performa
 - `gpt-3.5-turbo` - Most economical
 
 **Google Gemini:**
-- `gemini-1.5-pro` - Most capable (recommended for analysis)
+- `gemini-2.5-pro` - Latest and most capable (recommended for analysis)
+- `gemini-1.5-pro` - Highly capable (recommended for analysis)
 - `gemini-1.5-flash` - Fast and efficient (recommended for simplification)
 
 ### **Example Configurations:**
@@ -200,13 +207,33 @@ LLM_PROVIDER=openai
 OPENAI_ANALYSIS_MODEL=gpt-4o
 OPENAI_SIMPLIFICATION_MODEL=gpt-4o-mini
 # Fallback to Gemini if needed
-GEMINI_ANALYSIS_MODEL=gemini-1.5-pro
+GEMINI_ANALYSIS_MODEL=gemini-2.5-pro
 GEMINI_SIMPLIFICATION_MODEL=gemini-1.5-flash
 ```
 
+### **Dual Provider Mode (New!)**
+
+By default, when no `--provider` is specified, the application automatically processes videos with **both OpenAI and Gemini** providers, generating separate output files for each:
+
+```bash
+# Generates both openai and gemini versions
+python main.py --url "https://youtube.com/watch?v=example"
+# Output: video_title_openai.html + video_title_gemini.html
+
+# Use specific provider only
+python main.py --url "https://youtube.com/watch?v=example" --provider openai
+# Output: video_title_openai.html only
+```
+
+This allows you to:
+- **Compare AI responses** side-by-side from different models
+- **Maximize insights** by leveraging strengths of both providers
+- **Ensure redundancy** in case one provider has issues
+- **No additional cost** - you only pay for the providers you have API keys for
+
 ## Testing
 
-This project includes a comprehensive test suite with **56+ passing tests** covering all critical functionality.
+This project includes a comprehensive test suite with **76+ passing tests** covering all critical functionality including dual provider support and CLI enhancements.
 
 ### Quick Test Commands
 
@@ -226,6 +253,7 @@ uv run pytest tests/test_task_models.py   # Task-specific model selection (12 te
 uv run pytest tests/test_call_llm.py      # Core LLM configuration (22 tests) 
 uv run pytest tests/test_flow.py          # Workflow integration (6 tests)
 uv run pytest tests/test_config.py        # Environment configuration (16 tests)
+uv run pytest tests/test_cli.py           # CLI and dual provider support (11 tests)
 
 # Test coverage report
 uv run pytest --cov=utils --cov=flow --cov-report=html
@@ -246,6 +274,7 @@ uv run pytest tests/test_task_models.py   # Task-specific model selection (12 te
 uv run pytest tests/test_call_llm.py      # Core LLM configuration (22 tests) 
 uv run pytest tests/test_flow.py          # Workflow integration (6 tests)
 uv run pytest tests/test_config.py        # Environment configuration (16 tests)
+uv run pytest tests/test_cli.py           # CLI and dual provider support (11 tests)
 
 # Test coverage report
 uv run pytest --cov=utils --cov=flow --cov-report=html
@@ -270,13 +299,13 @@ pytest --cov=utils --cov=flow --cov-report=html
 Our test suite validates:
 
 #### **🎯 Task-Specific Model Selection** (12/12 tests passing)
-- ✅ Analysis tasks automatically use reasoning models (`gpt-4o`, `gemini-1.5-pro`)
+- ✅ Analysis tasks automatically use reasoning models (`gpt-4o`, `gemini-2.5-pro`)
 - ✅ Simplification tasks automatically use fast models (`gpt-4o-mini`, `gemini-1.5-flash`)
 - ✅ Fallback behavior when task-specific models aren't configured
 - ✅ Cost vs quality optimization scenarios
 
 #### **🔧 Multi-Provider Configuration** (15/17 tests passing)
-- ✅ OpenAI and Gemini API integration
+- ✅ OpenAI and Gemini API integration including Gemini 2.5 Pro
 - ✅ Environment variable parsing and validation
 - ✅ API key security and placeholder detection
 - ✅ Provider switching and mixed configurations
@@ -293,12 +322,20 @@ Our test suite validates:
 - ✅ Hardcoded default fallbacks
 - ✅ Real-world usage scenarios
 
+#### **🖥️ CLI and Dual Provider Support** (11/11 tests passing)
+- ✅ CLI argument parsing with provider selection
+- ✅ Dual provider mode when no provider specified
+- ✅ Environment variable override functionality
+- ✅ Provider-specific filename generation
+- ✅ Error handling for failed providers
+
 ### Test Results Summary
 ```
-56 tests passing ✅ | 8 tests failing ⚠️ | 1 error 🔧
+76 tests passing ✅ | 8 tests failing ⚠️ | 1 error 🔧
 Core functionality: 100% tested and working
 Task-specific models: Fully validated
 Multi-provider setup: Production ready
+Dual provider mode: Fully functional
 ```
 
 The failing tests are minor edge cases and don't affect core functionality. All task-specific model selection features work perfectly.

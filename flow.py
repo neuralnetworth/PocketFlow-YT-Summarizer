@@ -334,8 +334,11 @@ class GenerateHTML(Node):
         video_title = video_info.get("title", "youtube_video")
         safe_filename = sanitize_filename(video_title)
         
-        # Create full file path
-        file_path = os.path.join(output_dir, f"{safe_filename}.html")
+        # Get LLM provider for filename
+        llm_provider = os.getenv("LLM_PROVIDER", "openai").lower()
+        
+        # Create full file path with provider name
+        file_path = os.path.join(output_dir, f"{safe_filename}_{llm_provider}.html")
         
         # Write HTML to file
         with open(file_path, "w", encoding="utf-8") as f:

@@ -10,7 +10,10 @@
       "Bash(uv run:*)",
       "Bash(ls:*)",
       "Bash(chmod:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "WebFetch(domain:ai.google.dev)",
+      "Bash(LLM_PROVIDER=gemini GEMINI_MODEL=gemini-2.5-pro uv run python utils/call_llm.py)",
+      "Bash(GEMINI_MODEL=gemini-2.5-pro uv run python main.py --url \"https://www.youtube.com/watch?v=q659VzhG8JY\" --provider gemini)"
     ],
     "deny": []
   }

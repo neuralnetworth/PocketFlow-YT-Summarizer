@@ -48,13 +48,13 @@ def call_llm_openai(prompt: str, model: str = None, max_retries: int = 3) -> str
                 response = client.chat.completions.create(
                     model=model,
                     messages=[{"role": "user", "content": prompt}],
-                    max_completion_tokens=1024
+                    max_completion_tokens=4096
                 )
             else:
                 response = client.chat.completions.create(
                     model=model,
                     messages=[{"role": "user", "content": prompt}],
-                    max_completion_tokens=1024,
+                    max_completion_tokens=4096,
                     temperature=0.7
                 )
             return response.choices[0].message.content
@@ -76,6 +76,15 @@ def call_llm_gemini(prompt: str, model: str = None, max_retries: int = 3) -> str
     genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
     if model is None:
         model = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
+    
+    # Configure safety settings to be less restrictive
+    safety_settings = [
+        {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_ONLY_HIGH"},
+        {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_ONLY_HIGH"},
+        {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_ONLY_HIGH"},
+        {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_ONLY_HIGH"},
+    ]
+    
     genai_model = genai.GenerativeModel(model)
     
     for attempt in range(max_retries):
@@ -83,11 +92,44 @@ def call_llm_gemini(prompt: str, model: str = None, max_retries: int = 3) -> str
             response = genai_model.generate_content(
                 prompt,
                 generation_config=genai.types.GenerationConfig(
-                    max_output_tokens=1024,
+                    max_output_tokens=4096,  # Increased for longer responses
                     temperature=0.7,
-                )
+                ),
+                safety_settings=safety_settings
             )
-            return response.text
+            
+            # Check if response was blocked by safety filters
+            if response.candidates and len(response.candidates) > 0:
+                candidate = response.candidates[0]
+                if hasattr(candidate, 'finish_reason') and candidate.finish_reason != 1:  # 1 = STOP (normal completion)
+                    # Handle different finish reasons
+                    finish_reasons = {
+                        2: "MAX_TOKENS",
+                        3: "SAFETY", 
+                        4: "RECITATION",
+                        5: "OTHER"
+                    }
+                    reason = finish_reasons.get(candidate.finish_reason, f"UNKNOWN({candidate.finish_reason})")
+                    logger.warning(f"Gemini response blocked/incomplete. Finish reason: {reason}")
+                    
+                    if candidate.finish_reason == 3:  # SAFETY
+                        raise Exception("Content was blocked by safety filters. Try rephrasing your prompt.")
+                    elif candidate.finish_reason == 2:  # MAX_TOKENS
+                        # Try to get partial response
+                        if hasattr(candidate.content, 'parts') and candidate.content.parts:
+                            return candidate.content.parts[0].text
+                        else:
+                            raise Exception("Response was truncated due to max tokens limit.")
+                
+                # Get the text response
+                if hasattr(response, 'text') and response.text:
+                    return response.text
+                elif response.candidates and response.candidates[0].content.parts:
+                    return response.candidates[0].content.parts[0].text
+                else:
+                    raise Exception("No valid response text returned from Gemini API.")
+            else:
+                raise Exception("No candidates returned from Gemini API.")
         
         except Exception as e:
             logger.warning(f"Gemini API call failed (attempt {attempt + 1}/{max_retries}): {e}")

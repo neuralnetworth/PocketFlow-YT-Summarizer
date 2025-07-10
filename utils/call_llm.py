@@ -43,20 +43,14 @@ def call_llm_openai(prompt: str, model: str = None, max_retries: int = 3) -> str
         try:
             if model is None:
                 model = os.getenv("OPENAI_MODEL", "gpt-4o")
-            # o3 models only support temperature=1 (default)
-            if model.startswith("o3"):
-                response = client.chat.completions.create(
-                    model=model,
-                    messages=[{"role": "user", "content": prompt}],
-                    max_completion_tokens=4096
-                )
-            else:
-                response = client.chat.completions.create(
-                    model=model,
-                    messages=[{"role": "user", "content": prompt}],
-                    max_completion_tokens=4096,
-                    temperature=0.7
-                )
+            
+            # All models: let them use their defaults
+            # Note: o3 models don't support temperature, but OpenAI handles this gracefully
+            response = client.chat.completions.create(
+                model=model,
+                messages=[{"role": "user", "content": prompt}]
+                # No parameters set - let models use their optimal defaults
+            )
             return response.choices[0].message.content
         
         except Exception as e:
@@ -91,10 +85,6 @@ def call_llm_gemini(prompt: str, model: str = None, max_retries: int = 3) -> str
         try:
             response = genai_model.generate_content(
                 prompt,
-                generation_config=genai.types.GenerationConfig(
-                    max_output_tokens=4096,  # Increased for longer responses
-                    temperature=0.7,
-                ),
                 safety_settings=safety_settings
             )
             

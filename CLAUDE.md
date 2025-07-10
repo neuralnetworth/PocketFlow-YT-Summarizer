@@ -163,6 +163,8 @@ The project supports both UV and pip workflows. To migrate:
 - The LLM configuration is in `utils/call_llm.py`
 - Supports multiple providers: OpenAI and Google Gemini
 - **Task-specific model selection** for optimal performance and cost
+- **Simplified parameter handling** - All models use their optimal defaults (no temperature or token limits)
+- **o3 Reasoning Models Supported** - Works seamlessly with OpenAI's latest reasoning models
 - Switch providers by setting `LLM_PROVIDER` environment variable
 - Implements retry logic with exponential backoff for both providers
 - Uses YAML for structured outputs (more reliable than JSON)
@@ -189,13 +191,13 @@ Set these in your `.env` file:
 # Choose provider: openai or gemini
 LLM_PROVIDER=openai
 
-# Task-Specific Model Configuration
+# Task-Specific Model Configuration (2025 Best Practices)
 # ANALYSIS: Complex reasoning tasks (topic extraction, content analysis)
-OPENAI_ANALYSIS_MODEL=gpt-4o
+OPENAI_ANALYSIS_MODEL=o3-2025-04-16      # Latest reasoning model
 GEMINI_ANALYSIS_MODEL=gemini-2.5-pro
 
 # SIMPLIFICATION: Content rephrasing and comprehensive explanations
-OPENAI_SIMPLIFICATION_MODEL=gpt-4o-mini
+OPENAI_SIMPLIFICATION_MODEL=gpt-4.1-2025-04-14  # Latest generative model
 GEMINI_SIMPLIFICATION_MODEL=gemini-1.5-flash
 
 # General Model Configuration (fallback if task-specific not set)
@@ -210,10 +212,10 @@ GEMINI_API_KEY=your_gemini_api_key_here
 #### Available Models & Recommendations
 
 **OpenAI Models:**
-- `gpt-4o` - Latest GPT-4 Omni model (best for analysis)
-- `gpt-4o-mini` - Faster, cheaper version (ideal for simplification)
-- `gpt-4-turbo` - Previous generation GPT-4 Turbo
-- `gpt-3.5-turbo` - Most economical option
+- `o3-2025-04-16` - Latest reasoning model (excellent for analysis)
+- `gpt-4.1-2025-04-14` - Latest generative model (great for simplification)
+- `gpt-4o` - GPT-4 Omni model (solid all-around choice)
+- `gpt-4o-mini` - Faster, cheaper version (good for simplification)
 
 **Gemini Models:**
 - `gemini-2.5-pro` - Latest and most capable model (best for analysis)
@@ -222,18 +224,25 @@ GEMINI_API_KEY=your_gemini_api_key_here
 
 #### Optimization Examples
 
-**Cost-Optimized Configuration:**
+**Recommended Configuration (2025):**
 ```bash
 LLM_PROVIDER=openai
-OPENAI_ANALYSIS_MODEL=gpt-4o-mini      # Cheaper for analysis
-OPENAI_SIMPLIFICATION_MODEL=gpt-3.5-turbo # Cheapest for simplification
+OPENAI_ANALYSIS_MODEL=o3-2025-04-16        # Latest reasoning model
+OPENAI_SIMPLIFICATION_MODEL=gpt-4.1-2025-04-14 # Latest generative model
 ```
 
 **Quality-Optimized Configuration:**
 ```bash  
 LLM_PROVIDER=openai
-OPENAI_ANALYSIS_MODEL=gpt-4o           # Best reasoning for analysis
+OPENAI_ANALYSIS_MODEL=gpt-4o           # Strong reasoning for analysis
 OPENAI_SIMPLIFICATION_MODEL=gpt-4o-mini # Fast enough for simplification
+```
+
+**Cost-Optimized Configuration:**
+```bash
+LLM_PROVIDER=openai
+OPENAI_ANALYSIS_MODEL=gpt-4o-mini      # Cheaper for analysis
+OPENAI_SIMPLIFICATION_MODEL=gpt-4o-mini # Consistent model choice
 ```
 
 **Hybrid Provider Configuration:**

@@ -160,25 +160,30 @@ python main.py --url "https://www.youtube.com/watch?v=example"
 
 ## LLM Configuration
 
-This application supports **task-specific model selection** for optimal performance and cost:
+This application supports **task-specific model selection** for optimal performance and cost, with **simplified parameter handling** following 2025 best practices:
+
+### **Key Features:**
+- **No Parameter Configuration Required** - All models use their optimal defaults
+- **o3 Reasoning Models Supported** - Works seamlessly with OpenAI's latest reasoning models
+- **Maximum Compatibility** - Single codebase works with all current and future models
 
 ### **Analysis Tasks** (Complex Reasoning)
 - **Purpose:** Extract topics and generate questions from video transcripts
-- **Recommended Models:** `gpt-4o`, `gemini-1.5-pro` (high reasoning capability)
+- **Recommended Models:** `o3-2025-04-16`, `gpt-4o`, `gemini-2.5-pro` (high reasoning capability)
 - **Configuration:** `OPENAI_ANALYSIS_MODEL`, `GEMINI_ANALYSIS_MODEL`
 
 ### **Simplification Tasks** (Clear Communication) 
 - **Purpose:** Rephrase content and create ELI5 explanations
-- **Recommended Models:** `gpt-4o-mini`, `gemini-1.5-flash` (fast and cost-effective)
+- **Recommended Models:** `gpt-4.1-2025-04-14`, `gpt-4o-mini`, `gemini-1.5-flash` (fast and cost-effective)
 - **Configuration:** `OPENAI_SIMPLIFICATION_MODEL`, `GEMINI_SIMPLIFICATION_MODEL`
 
 ### **Supported Providers & Models:**
 
 **OpenAI:**
-- `gpt-4o` - Latest GPT-4 Omni (recommended for analysis)
+- `o3-2025-04-16` - Latest reasoning model (excellent for analysis)
+- `gpt-4.1-2025-04-14` - Latest generative model (great for simplification)
+- `gpt-4o` - GPT-4 Omni (solid all-around choice)
 - `gpt-4o-mini` - Faster, cheaper (recommended for simplification)
-- `gpt-4-turbo` - Previous generation
-- `gpt-3.5-turbo` - Most economical
 
 **Google Gemini:**
 - `gemini-2.5-pro` - Latest and most capable (recommended for analysis)
@@ -187,28 +192,35 @@ This application supports **task-specific model selection** for optimal performa
 
 ### **Example Configurations:**
 
-**Cost-Optimized Setup:**
+**Recommended Setup (o3 + Latest Models):**
 ```bash
 LLM_PROVIDER=openai
-OPENAI_ANALYSIS_MODEL=gpt-4o-mini
-OPENAI_SIMPLIFICATION_MODEL=gpt-3.5-turbo
+OPENAI_ANALYSIS_MODEL=o3-2025-04-16        # Reasoning model for analysis
+OPENAI_SIMPLIFICATION_MODEL=gpt-4.1-2025-04-14  # Fast model for simplification
 ```
 
 **Quality-Optimized Setup:**
 ```bash
 LLM_PROVIDER=openai
-OPENAI_ANALYSIS_MODEL=gpt-4o
-OPENAI_SIMPLIFICATION_MODEL=gpt-4o-mini
+OPENAI_ANALYSIS_MODEL=gpt-4o              # Strong reasoning for analysis
+OPENAI_SIMPLIFICATION_MODEL=gpt-4o-mini   # Fast enough for simplification
 ```
 
 **Mixed Provider Setup:**
 ```bash
 LLM_PROVIDER=openai
-OPENAI_ANALYSIS_MODEL=gpt-4o
-OPENAI_SIMPLIFICATION_MODEL=gpt-4o-mini
+OPENAI_ANALYSIS_MODEL=o3-2025-04-16
+OPENAI_SIMPLIFICATION_MODEL=gpt-4.1-2025-04-14
 # Fallback to Gemini if needed
 GEMINI_ANALYSIS_MODEL=gemini-2.5-pro
 GEMINI_SIMPLIFICATION_MODEL=gemini-1.5-flash
+```
+
+**Cost-Optimized Setup:**
+```bash
+LLM_PROVIDER=openai
+OPENAI_ANALYSIS_MODEL=gpt-4o-mini         # Cheaper for analysis
+OPENAI_SIMPLIFICATION_MODEL=gpt-4o-mini   # Consistent model choice
 ```
 
 ### **Dual Provider Mode (New!)**

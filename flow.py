@@ -317,8 +317,11 @@ class GenerateHTML(Node):
                     "bullets": bullets
                 })
         
+        # Get LLM provider for display
+        llm_provider = os.getenv("LLM_PROVIDER", "openai").lower()
+        
         # Generate HTML
-        html_content = html_generator(title, thumbnail_url, sections)
+        html_content = html_generator(title, sections, provider=llm_provider)
         return html_content
     
     def post(self, shared, prep_res, exec_res):

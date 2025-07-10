@@ -1,9 +1,8 @@
-def html_generator(title, image_url, sections):
+def html_generator(title, sections, provider=None):
     """
     Generates an HTML string with a handwriting style using Tailwind CSS.
 
     :param title: Main title for the page ("Title 1").
-    :param image_url: URL of the image to be placed below the main title.
     :param sections: A list of dictionaries, each containing:
         {
             "title": str (Title for the section e.g. "Title 2"),
@@ -13,8 +12,14 @@ def html_generator(title, image_url, sections):
                 ...
             ]
         }
+    :param provider: Optional LLM provider name to append to title (e.g., "openai", "gemini")
     :return: A string of HTML content.
     """
+    # Prepare title with provider if specified
+    display_title = title
+    if provider:
+        display_title = f"{title} ({provider.upper()})"
+    
     # Start building the HTML
     html_template = f"""<!DOCTYPE html>
 <html lang=\"en\">
@@ -76,13 +81,7 @@ def html_generator(title, image_url, sections):
     </div>
     
     <!-- Title 1 -->
-    <h1 class=\"text-4xl text-gray-800 mb-4\">{title}</h1>
-    <!-- Image below Title 1 -->
-    <img
-      src=\"{image_url}\"
-      alt=\"Placeholder image\"
-      class=\"rounded-xl mb-6\"
-    />"""
+    <h1 class=\"text-4xl text-gray-800 mb-6\">{display_title}</h1>"""
 
     # For each section, add a sub-title (Title 2, etc.) and bullet points.
     for section in sections:
@@ -128,6 +127,6 @@ if __name__ == "__main__":
             ]
         }
     ]
-    html_content = html_generator("Title 1", "https://picsum.photos/600/300?grayscale", sections_data) 
+    html_content = html_generator("Title 1", sections_data) 
     with open("output.html", "w") as file:
         file.write(html_content)

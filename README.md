@@ -126,6 +126,22 @@ The application saves HTML files in the `output/` directory with the provider na
 
 Open the generated HTML files in your browser to compare summaries from different AI models.
 
+#### ⏱️ **Processing Times & Timeout Considerations:**
+
+**Dual Provider Mode (Default)** can take **10-15 minutes** for longer videos as it:
+1. Processes the video with OpenAI (analysis + simplification)
+2. Then processes the same video with Gemini (analysis + simplification)
+
+**Single Provider Mode** typically takes **5-8 minutes** for most videos.
+
+**For Claude Code Users**: When running commands via the Bash tool, use an extended timeout:
+```bash
+# Use 600000ms (10 minutes) timeout for dual provider mode
+uv run python main.py --url "https://www.youtube.com/watch?v=example"
+```
+
+**Note**: The application will show progress logs during processing, so you can monitor its progress even during longer processing times.
+
 ### Alternative: Traditional pip installation
 
 If you prefer using pip:

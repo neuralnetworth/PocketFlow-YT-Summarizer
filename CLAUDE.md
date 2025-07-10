@@ -54,6 +54,28 @@ The application saves HTML files in the `output/` directory with provider names 
 - **Dual mode** (default): `video_title_openai.html` + `video_title_gemini.html`
 - **Single provider**: `video_title_[provider].html`
 
+### ⏱️ Processing Times & Timeout Considerations
+
+**Important for Claude Code**: When running the YouTube summarizer via the Bash tool, use extended timeout settings:
+
+- **Dual Provider Mode** (default): Takes 10-15 minutes for longer videos
+- **Single Provider Mode**: Takes 5-8 minutes for most videos
+
+**Recommended Bash Tool Timeout**: Use `600000ms` (10 minutes) minimum for dual provider mode:
+
+```bash
+# In Claude Code, use extended timeout for dual provider processing
+uv run python main.py --url "https://www.youtube.com/watch?v=VIDEO_ID"
+# Timeout: 600000ms (10 minutes)
+```
+
+**Why Extended Timeout is Needed**:
+1. **Analysis Phase**: OpenAI o3-2025-04-16 reasoning model processes full transcript
+2. **Simplification Phase**: 5 topics × 3 questions × 2 providers = 30 LLM calls
+3. **Network Latency**: API calls to both OpenAI and Gemini
+
+**Progress Monitoring**: The application logs progress in real-time, so you can monitor processing even during longer runs.
+
 ## Architecture
 
 The application uses the PocketFlow framework with a 4-node workflow:
